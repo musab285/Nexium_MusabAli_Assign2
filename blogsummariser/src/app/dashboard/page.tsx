@@ -18,14 +18,55 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+
+async function scrapeContent(url: string) : Promise<string | null> {
+  try{
+    const response = await fetch(`/api/scraper?url=${encodeURIComponent(url)}`);
+    const content = await response.text();
+    console.log("Scraped content:", content);
+    return content;
+  } catch (error) {
+    console.error("Error scraping content:", error);
+    return null;
+  }
+}
+
 export default function Page() {
   const [url, setUrl] = useState("")
+  const [ translate, setTranslate ] = useState(false);
+  const [ summarise, setSummarise ] = useState(false);
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
   };
-  // console.log("Current URL:", url);
 
+  const handleSummarise = () => {
+    console.log("Summarising URL:", url);
+    setSummarise(true);
+    // scrapeContent(url).then((result) => {
+    //   if (result.content) {
+    //     return (
+    //     <div>
+    //       {result.content}</div>);
+    //     // Add summarisation logic here
+    //   }
+    //   else {
+    //     console.error("Failed to scrape content from the URL.");
+    //   }
+    // });
+    return (<div>{scrapeContent(url)}</div>);
+  };
+
+  const handleTranslate = () => {
+    setTranslate(true);
+    console.log("Translating URL:", url);
+    // Add translation logic here
+  };
+
+  if (!summarise && !translate) {
   return (
+     
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -56,10 +97,10 @@ export default function Page() {
             <Label className="m-4 text-2xl">Search Box</Label>
             <Input type="text" className="max-w-3xl" onChange={handleUrlChange} placeholder="Enter URL..."/>
             <div className="mt-4 flex gap-2 w-3xl">
-                <Button className="flex-1 bg-gray-600 hover:bg-gray-800">
+                <Button onClick={handleSummarise} className="flex-1 bg-gray-600 hover:bg-gray-800">
                 Summarise
                 </Button>
-                <Button className="flex-1 bg-gray-600 hover:bg-gray-800">
+                <Button onClick={handleTranslate} className="flex-1 bg-gray-600 hover:bg-gray-800">
                 Translate
                 </Button>
             </div>
@@ -68,4 +109,28 @@ export default function Page() {
       </SidebarInset>
     </SidebarProvider>
   )
+  }
+  // else if (summarise) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-screen">
+  //       <h1 className="text-2xl font-bold mb-4">Summarised Content</h1>
+  //       <p>Here will be the summarised content for the URL: {url}</p>
+  //       <Button onClick={() => {setSummarise(false), setUrl("")}} className="mt-4 bg-gray-600 hover:bg-gray-800">
+  //         Back to Search
+  //       </Button>
+  //     </div>
+  //   )
+  // }
+  // else if (translate) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-screen">
+  //       <h1 className="text-2xl font-bold mb-4">Translated Content</h1>
+  //       <p>Here will be the translated content for the URL: {url}</p>
+  //       <p></p>
+  //       <Button onClick={() => {setTranslate(false), setUrl("")}} className="mt-4 bg-gray-600 hover:bg-gray-800">
+  //         Back to Search
+  //       </Button>
+  //     </div>
+  //   )
+  // }
 }
