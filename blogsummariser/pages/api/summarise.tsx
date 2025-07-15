@@ -5,6 +5,7 @@ import { env } from "process";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const cohere = process.env.COHERE_TOKEN
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
@@ -19,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         try {
-            const client = new CohereClient({ token: env.NEXT_PUBLIC_COHERE_TOKEN });
+            const client = new CohereClient({ token: cohere });
             const summarised = await client.summarize({
                 text: content,
                 length: "medium",
