@@ -1,7 +1,7 @@
 import { scrapeContent } from "@/lib/scrape";
 import { NextApiRequest, NextApiResponse } from "next";
 import { CohereClient } from "cohere-ai";
-import { env } from "process";
+// import { env } from "process";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
