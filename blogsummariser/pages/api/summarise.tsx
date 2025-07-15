@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         try {
-            const client = new CohereClient({ token: env.COHERE_TOKEN });
+            const client = new CohereClient({ token: process.env.NEXT_PUBLIC_COHERE_TOKEN });
             const summarised = await client.summarize({
                 text: content,
                 length: "medium",
