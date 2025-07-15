@@ -5,7 +5,7 @@ import { CohereClient } from "cohere-ai";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const cohere = process.env.COHERE_TOKEN
+    const cohere = "g0r9EXl6WsPn2LciylbBUzSA4lB08MidGXXD7F5o";
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
