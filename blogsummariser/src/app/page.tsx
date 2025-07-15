@@ -1,103 +1,276 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import type React from "react"
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+
+export default function Page() {
+  const [url, setUrl] = useState("")
+  const [translate, setTranslate] = useState(false)
+  const [summarise, setSummarise] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [ogcontent, setogContent] = useState("")
+  const [scrapedData, setScrapedData] = useState<{ content: string } | null>(null)
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value)
+  }
+
+  const handleSummarise = async () => {
+    setSummarise(true)
+    setTranslate(false)
+    setLoading(true)
+    setScrapedData(null)
+    setogContent("")
+
+    try {
+      const response = await fetch("/api/summarise", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.error || "Something went wrong")
+      } else {
+        setScrapedData({ content: data.output })
+        setogContent(data.content)
+        setLoading(false)
+      }
+    } catch (error) {
+      console.error("Error summarising content:", error)
+      setScrapedData({
+        content: "Error fetching content. Please check the URL.",
+      })
+    }
+  }
+
+  const handleTranslate = async () => {
+    setSummarise(false)
+    setTranslate(true)
+    setLoading(true)
+    setScrapedData(null)
+    setogContent("")
+
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.error || "Something went wrong")
+      } else {
+        setScrapedData({ content: data.translatedText })
+        setogContent(data.content)
+        setLoading(false)
+      }
+    } catch (error) {
+      console.error("Error Translating content:", error)
+      setScrapedData({
+        content: "Error fetching content. Please check the URL.",
+      })
+    }
+  }
+
+  // Initial search state
+  if (!summarise && !translate) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Content Processor</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-2xl space-y-8">
+            <div className="text-center space-y-3">
+              <h2 className="text-4xl font-bold tracking-tight">Process Web Content</h2>
+              <p className="text-muted-foreground text-lg">Enter a URL to summarize or translate content</p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="url" className="text-base">
+                  URL
+                </Label>
+                <Input
+                  id="url"
+                  type="url"
+                  placeholder="https://example.com"
+                  value={url}
+                  onChange={handleUrlChange}
+                  className="text-base h-12"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Button onClick={handleSummarise} disabled={!url.trim()} size="lg" className="h-12">
+                  Summarise
+                </Button>
+                <Button
+                  onClick={handleTranslate}
+                  disabled={!url.trim()}
+                  variant="outline"
+                  size="lg"
+                  className="h-12 bg-transparent"
+                >
+                  Translate
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // Summary state
+  if (summarise) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Summary</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-6xl space-y-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Original Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{ogcontent}</p>}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Summarised Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{scrapedData.content}</p>}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={() => {
+                  setSummarise(false)
+                  setUrl("")
+                }}
+                variant="outline"
+                size="lg"
+              >
+                Back to Search
+              </Button>
+              <Button
+                onClick={() => {
+                  setSummarise(false)
+                  handleTranslate()
+                }}
+                size="lg"
+              >
+                Translate Instead
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // Translation state
+  if (translate) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Translation</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-6xl space-y-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Original Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{ogcontent}</p>}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Translated Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && (
+                    <p
+                      className="text-sm leading-relaxed whitespace-pre-line"
+                      style={{
+                        direction: "rtl",
+                        fontFamily: "'Noto Nastaliq Urdu', serif",
+                      }}
+                    >
+                      {scrapedData.content}
+                    </p>
+                  )}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={() => {
+                  setTranslate(false)
+                  setUrl("")
+                }}
+                variant="outline"
+                size="lg"
+              >
+                Back to Search
+              </Button>
+              <Button
+                onClick={() => {
+                  setTranslate(false)
+                  handleSummarise()
+                }}
+                size="lg"
+              >
+                Summarise Instead
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 }

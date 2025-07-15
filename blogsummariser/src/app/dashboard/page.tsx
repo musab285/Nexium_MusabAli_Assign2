@@ -1,45 +1,31 @@
-"use client";
-import { AppSidebar } from "@/components/app-sidebar";
-// import { NavActions } from "@/components/nav-actions"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { set } from "react-hook-form";
-// import { scrapeContent } from "@/lib/scrape"
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 
 export default function Page() {
-  const [url, setUrl] = useState("");
-  const [translate, setTranslate] = useState(false);
-  const [summarise, setSummarise] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [ogcontent, setogContent] = useState("");
+  const [url, setUrl] = useState("")
+  const [translate, setTranslate] = useState(false)
+  const [summarise, setSummarise] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [ogcontent, setogContent] = useState("")
+  const [scrapedData, setScrapedData] = useState<{ content: string } | null>(null)
+
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  };
-  const [scrapedData, setScrapedData] = useState<{ content: string } | null>(
-    null
-  );
+    setUrl(e.target.value)
+  }
 
   const handleSummarise = async () => {
-    // console.log("Summarising URL:", url);
-    setSummarise(true);
-    setTranslate(false);
-    setLoading(true);
-    setScrapedData(null);
-    setogContent("");
+    setSummarise(true)
+    setTranslate(false)
+    setLoading(true)
+    setScrapedData(null)
+    setogContent("")
+
     try {
       const response = await fetch("/api/summarise", {
         method: "POST",
@@ -47,32 +33,32 @@ export default function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ url }),
-      });
+      })
 
-      const data = await response.json();
-      // console.log("Scraped Data:", data.output);
+      const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || "Something went wrong");
+        alert(data.error || "Something went wrong")
       } else {
-        setScrapedData({ content: data.output });
-        setogContent(data.content);
-        setLoading(false);
+        setScrapedData({ content: data.output })
+        setogContent(data.content)
+        setLoading(false)
       }
     } catch (error) {
-      console.error("Error summarising content:", error);
+      console.error("Error summarising content:", error)
       setScrapedData({
         content: "Error fetching content. Please check the URL.",
-      });
+      })
     }
-  };
+  }
 
   const handleTranslate = async () => {
-    setSummarise(false);
-    setTranslate(true);
-    setLoading(true);
-    setScrapedData(null);
-    setogContent("");
+    setSummarise(false)
+    setTranslate(true)
+    setLoading(true)
+    setScrapedData(null)
+    setogContent("")
+
     try {
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -80,201 +66,172 @@ export default function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ url }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || "Something went wrong");
+        alert(data.error || "Something went wrong")
       } else {
-        setScrapedData({ content: data.translatedText });
-        console.log("Scraped Data:", scrapedData);
-        setogContent(data.content);
-        setLoading(false);
+        setScrapedData({ content: data.translatedText })
+        setogContent(data.content)
+        setLoading(false)
       }
     } catch (error) {
-      console.error("Error Translating content:", error);
+      console.error("Error Translating content:", error)
       setScrapedData({
         content: "Error fetching content. Please check the URL.",
-      });
+      })
     }
-    // console.log("Translating URL:", url);
-  };
+  }
 
+  // Initial search state
   if (!summarise && !translate) {
     return (
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-14 shrink-0 items-center gap-2">
-            <div className="flex flex-1 items-center gap-2 px-3">
-              <SidebarTrigger />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="line-clamp-1">
-                      Generate Summary or Translation
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Content Processor</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-2xl space-y-8">
+            <div className="text-center space-y-3">
+              <h2 className="text-4xl font-bold tracking-tight">Process Web Content</h2>
+              <p className="text-muted-foreground text-lg">Enter a URL to summarize or translate content</p>
             </div>
-            {/* <div className="ml-auto px-3">
-            <NavActions />
-          </div> */}
-          </header>
-          <div className="flex flex-1 flex-col gap-4 px-4 py-10">
-            {/* <div className="bg-muted/50 mx-auto h-24 w-full max-w-3xl rounded-xl" /> */}
-            <div className="mx-auto h-[calc(100vh-35vh)] flex flex-col items-center justify-center w-full max-w-6xl rounded-xl">
-              <Label className="m-4 text-2xl">Search Box</Label>
-              <Input
-                type="text"
-                className="max-w-3xl"
-                onChange={handleUrlChange}
-                placeholder="Enter URL..."
-              />
-              <div className="mt-4 flex gap-2 w-3xl">
-                <Button
-                  onClick={handleSummarise}
-                  className="flex-1 bg-gray-600 hover:bg-gray-800"
-                >
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="url" className="text-base">
+                  URL
+                </Label>
+                <Input
+                  id="url"
+                  type="url"
+                  placeholder="https://example.com"
+                  value={url}
+                  onChange={handleUrlChange}
+                  className="text-base h-12"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Button onClick={handleSummarise} disabled={!url.trim()} size="lg" className="h-12">
                   Summarise
                 </Button>
                 <Button
                   onClick={handleTranslate}
-                  className="flex-1 bg-gray-600 hover:bg-gray-800"
+                  disabled={!url.trim()}
+                  variant="outline"
+                  size="lg"
+                  className="h-12 bg-transparent"
                 >
                   Translate
                 </Button>
               </div>
             </div>
           </div>
-        </SidebarInset>
-      </SidebarProvider>
-    );
-  } else if (summarise) {
+        </main>
+      </div>
+    )
+  }
+
+  // Summary state
+  if (summarise) {
     return (
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-14 shrink-0 items-center gap-2">
-            <div className="flex flex-1 items-center gap-2 px-3">
-              <SidebarTrigger />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="line-clamp-1">
-                      Summary
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Summary</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-6xl space-y-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Original Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{ogcontent}</p>}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Summarised Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{scrapedData.content}</p>}
+                  {!scrapedData && !loading && (
+                    <p className="text-muted-foreground text-center">No content to display.</p>
+                  )}
+                </div>
+              </div>
             </div>
-            {/* <div className="ml-auto px-3">
-            <NavActions />
-          </div> */}
-          </header>
-          <div className="flex flex-col items-center justify-center">
-            <div className="mx-auto flex flex-col items-center justify-center w-full max-w-6xl rounded-xl">
-              <div className="flex flex-col">
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold mb-4">Original Content</h1>
-                  {scrapedData && <p className="text-sm">{ogcontent}</p>}
-                  {loading && <p className="text-sm">Loading...</p>}
-                  {!scrapedData && !loading && (
-                    <p className="text-lg">No content to display.</p>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold mb-4">
-                    Summarised Content
-                  </h1>
-                  {scrapedData && (
-                    <p className="text-sm">{scrapedData.content}</p>
-                  )}
-                  {loading && <p className="text-lg">Loading...</p>}
-                  {!scrapedData && !loading && (
-                    <p className="text-lg">No content to display.</p>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-row gap-2 w-full">
-                <Button
-                  onClick={() => {
-                    setSummarise(false);
-                    setUrl("");
-                  }}
-                  className="flex-1 mt-4 w-full bg-gray-600 hover:bg-gray-800"
-                >
-                  Back to Search
-                </Button>
-                <Button
-                  onClick={() => {
-                    setSummarise(false);
-                    handleTranslate();
-                  }}
-                  className="flex-1 mt-4 w-full bg-gray-600 hover:bg-gray-800"
-                >
-                  Translate
-                </Button>
-              </div>
+
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={() => {
+                  setSummarise(false)
+                  setUrl("")
+                }}
+                variant="outline"
+                size="lg"
+              >
+                Back to Search
+              </Button>
+              <Button
+                onClick={() => {
+                  setSummarise(false)
+                  handleTranslate()
+                }}
+                size="lg"
+              >
+                Translate Instead
+              </Button>
             </div>
           </div>
-        </SidebarInset>
-      </SidebarProvider>
-    );
-  } else if (translate) {
+        </main>
+      </div>
+    )
+  }
+
+  // Translation state
+  if (translate) {
     return (
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-14 shrink-0 items-center gap-2">
-            <div className="flex flex-1 items-center gap-2 px-3">
-              <SidebarTrigger />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="line-clamp-1">
-                      Summary
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-            {/* <div className="ml-auto px-3">
-              <NavActions />
-            </div> */}
-          </header>
-          <div className="flex flex-col items-center justify-center">
-            <div className="mx-auto flex flex-col items-center justify-center w-full max-w-6xl rounded-xl">
-              <div className="flex flex-col">
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold mb-4">Original Content</h1>
-                  {scrapedData && <p className="text-sm">{ogcontent}</p>}
-                  {loading && <p className="text-sm">Loading...</p>}
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-14 items-center">
+            <h1 className="text-lg font-semibold">Translation</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-3.5rem)]">
+          <div className="w-full max-w-6xl space-y-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Original Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{ogcontent}</p>}
                   {!scrapedData && !loading && (
-                    <p className="text-lg">No content to display.</p>
+                    <p className="text-muted-foreground text-center">No content to display.</p>
                   )}
                 </div>
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold mb-4">
-                    Translated Content
-                  </h1>
-                  {scrapedData && (
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center lg:text-left">Translated Content</h2>
+                <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
+                  {loading && <p className="text-muted-foreground text-center">Loading...</p>}
+                  {scrapedData && !loading && (
                     <p
-                      className="text-sm whitespace-pre-line"
+                      className="text-sm leading-relaxed whitespace-pre-line"
                       style={{
                         direction: "rtl",
                         fontFamily: "'Noto Nastaliq Urdu', serif",
@@ -283,36 +240,37 @@ export default function Page() {
                       {scrapedData.content}
                     </p>
                   )}
-                  {loading && <p className="text-lg">Loading...</p>}
                   {!scrapedData && !loading && (
-                    <p className="text-lg">No content to display.</p>
+                    <p className="text-muted-foreground text-center">No content to display.</p>
                   )}
                 </div>
               </div>
-              <div className="flex flex-row gap-2 w-full">
-                <Button
-                  onClick={() => {
-                    setTranslate(false);
-                    setUrl("");
-                  }}
-                  className="flex-1 mt-4 w-full bg-gray-600 hover:bg-gray-800"
-                >
-                  Back to Search
-                </Button>
-                <Button
-                  onClick={() => {
-                    setTranslate(false);
-                    handleSummarise();
-                  }}
-                  className="flex-1 mt-4 w-full bg-gray-600 hover:bg-gray-800"
-                >
-                  Summarise
-                </Button>
-              </div>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={() => {
+                  setTranslate(false)
+                  setUrl("")
+                }}
+                variant="outline"
+                size="lg"
+              >
+                Back to Search
+              </Button>
+              <Button
+                onClick={() => {
+                  setTranslate(false)
+                  handleSummarise()
+                }}
+                size="lg"
+              >
+                Summarise Instead
+              </Button>
             </div>
           </div>
-        </SidebarInset>
-      </SidebarProvider>
-    );
+        </main>
+      </div>
+    )
   }
 }
