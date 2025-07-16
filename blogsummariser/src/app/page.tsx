@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Content } from "next/font/google"
+
 
 export default function Page() {
   const [url, setUrl] = useState("")
