@@ -1,9 +1,10 @@
 import { scrapeContent } from "@/lib/scrape";
 import { NextApiRequest, NextApiResponse } from "next";
 import { CohereClient } from "cohere-ai";
+// import { prisma } from "@/lib/prisma"; // Ensure you have a Prisma client instance set up
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // Use env variable — Vercel will inject it at build/runtime
     const cohere = process.env.COHERE_API_KEY;
 
     if (!cohere) {
@@ -20,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ error: "URL is required" });
         }
 
-        const content = await scrapeContent(url);
+        const content= await scrapeContent(url);
         if (!content || content.trim() === "") {
             return res.status(404).json({ error: "Content not found or is empty" });
         }
@@ -33,10 +34,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             format: "paragraph",
             extractiveness: "medium",
         });
+        const title = content.split('\n')[0].trim() || "Untitled";
+        // try {
+        //     const post = await prisma.Summaries.create({
+        //         data: {
+        //         title,
+        //         content,
+        //         },
+        //     })
+        //     console.log("Post created:", post);
+        // }
+        // catch (error) {
+        //     console.error("Error creating post in database:", error);
+        //     // return res.status(500).json({ error: "Failed to save post to database" });
+        // }
 
         return res.status(200).json({ output: summarised.summary, content });
     } catch (error) {
         console.error("Error summarizing content:", error);
         return res.status(500).json({ error: "Failed to summarize content" });
     }
+
 }
