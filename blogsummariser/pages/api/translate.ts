@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(404).json({ error: "Content not found or is empty" });
         }
         try {
-            const translatedText = await translateText(content);
+            const translatedText = translateText(content);
             return res.status(200).json({ output: translatedText, content: content });
         }
         catch (error) {

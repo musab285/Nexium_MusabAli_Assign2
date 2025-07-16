@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Content } from "next/font/google"
 
 export default function Page() {
   const [url, setUrl] = useState("")
@@ -13,7 +14,7 @@ export default function Page() {
   const [summarise, setSummarise] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ogcontent, setogContent] = useState("")
-  const [scrapedData, setScrapedData] = useState<{ content: string } | null>(null)
+  const [scrapedData, setScrapedData] = useState("")
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value)
@@ -23,7 +24,7 @@ export default function Page() {
     setSummarise(true)
     setTranslate(false)
     setLoading(true)
-    setScrapedData(null)
+    // setScrapedData(null)
     setogContent("")
 
     try {
@@ -40,15 +41,13 @@ export default function Page() {
       if (!response.ok) {
         alert(data.error || "Something went wrong")
       } else {
-        setScrapedData({ content: data.output })
+        setScrapedData(data.output)
         setogContent(data.content)
         setLoading(false)
       }
     } catch (error) {
       console.error("Error summarising content:", error)
-      setScrapedData({
-        content: "Error fetching content. Please check the URL.",
-      })
+      setScrapedData("Error fetching content. Please check the URL.",)
     }
   }
 
@@ -56,7 +55,7 @@ export default function Page() {
     setSummarise(false)
     setTranslate(true)
     setLoading(true)
-    setScrapedData(null)
+    setScrapedData("")
     setogContent("")
 
     try {
@@ -73,15 +72,13 @@ export default function Page() {
       if (!response.ok) {
         alert(data.error || "Something went wrong")
       } else {
-        setScrapedData({ content: data.translatedText })
+        setScrapedData(data.output)
         setogContent(data.content)
         setLoading(false)
       }
     } catch (error) {
       console.error("Error Translating content:", error)
-      setScrapedData({
-        content: "Error fetching content. Please check the URL.",
-      })
+      setScrapedData("Error fetching content. Please check the URL.")
     }
   }
 
@@ -166,7 +163,7 @@ export default function Page() {
                 <h2 className="text-2xl font-semibold text-center lg:text-left">Summarised Content</h2>
                 <div className="rounded-lg border bg-muted/50 p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
                   {loading && <p className="text-muted-foreground text-center">Loading...</p>}
-                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{scrapedData.content}</p>}
+                  {scrapedData && !loading && <p className="text-sm leading-relaxed">{scrapedData}</p>}
                   {!scrapedData && !loading && (
                     <p className="text-muted-foreground text-center">No content to display.</p>
                   )}
@@ -203,6 +200,7 @@ export default function Page() {
 
   // Translation state
   if (translate) {
+    console.log(scrapedData)
     return (
       <div className="min-h-screen flex flex-col">
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -237,7 +235,7 @@ export default function Page() {
                         fontFamily: "'Noto Nastaliq Urdu', serif",
                       }}
                     >
-                      {scrapedData.content}
+                      {scrapedData}
                     </p>
                   )}
                   {!scrapedData && !loading && (
