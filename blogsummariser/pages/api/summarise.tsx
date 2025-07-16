@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             format: "paragraph",
             extractiveness: "medium",
         });
-        const title = content.split('\n')[0].trim() || "Untitled";
+        // const title = content.split('\n')[0].trim() || "Untitled";
         // try {
         //     const post = await prisma.Summaries.create({
         //         data: {
