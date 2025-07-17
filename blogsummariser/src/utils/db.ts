@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+// import { MongoClient } from "mongodb";
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
@@ -18,6 +18,7 @@ async function dbConnect() {
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      dbName: "BlogContent",
     });
   }
 
