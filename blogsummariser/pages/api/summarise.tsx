@@ -1,7 +1,7 @@
 import { scrapeContent } from "@/lib/scrape";
 import { NextApiRequest, NextApiResponse } from "next";
 import { CohereClient } from "cohere-ai";
-import { prisma } from "@/lib/prisma"; // Ensure you have a Prisma client instance set up
+import { prisma } from "@/lib/prisma"; 
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             format: "paragraph",
             extractiveness: "medium",
         });
-        const title = content.split('\n')[0].trim() || "Untitled";
+        const title = content.split('.')[0].trim() || "Untitled";
         try {
             const post = await prisma.summaries.create({
                 data: {
