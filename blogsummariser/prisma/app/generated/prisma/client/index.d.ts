@@ -893,6 +893,7 @@ export namespace Prisma {
     id: number | null
     title: string | null
     content: string | null
+    original: string | null
     createdAt: Date | null
   }
 
@@ -900,6 +901,7 @@ export namespace Prisma {
     id: number | null
     title: string | null
     content: string | null
+    original: string | null
     createdAt: Date | null
   }
 
@@ -907,6 +909,7 @@ export namespace Prisma {
     id: number
     title: number
     content: number
+    original: number
     createdAt: number
     _all: number
   }
@@ -924,6 +927,7 @@ export namespace Prisma {
     id?: true
     title?: true
     content?: true
+    original?: true
     createdAt?: true
   }
 
@@ -931,6 +935,7 @@ export namespace Prisma {
     id?: true
     title?: true
     content?: true
+    original?: true
     createdAt?: true
   }
 
@@ -938,6 +943,7 @@ export namespace Prisma {
     id?: true
     title?: true
     content?: true
+    original?: true
     createdAt?: true
     _all?: true
   }
@@ -1032,6 +1038,7 @@ export namespace Prisma {
     id: number
     title: string
     content: string
+    original: string
     createdAt: Date
     _count: SummariesCountAggregateOutputType | null
     _avg: SummariesAvgAggregateOutputType | null
@@ -1058,6 +1065,7 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     content?: boolean
+    original?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["summaries"]>
 
@@ -1065,6 +1073,7 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     content?: boolean
+    original?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["summaries"]>
 
@@ -1072,6 +1081,7 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     content?: boolean
+    original?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["summaries"]>
 
@@ -1079,10 +1089,11 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     content?: boolean
+    original?: boolean
     createdAt?: boolean
   }
 
-  export type SummariesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "createdAt", ExtArgs["result"]["summaries"]>
+  export type SummariesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "original" | "createdAt", ExtArgs["result"]["summaries"]>
 
   export type $SummariesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Summaries"
@@ -1091,6 +1102,7 @@ export namespace Prisma {
       id: number
       title: string
       content: string
+      original: string
       createdAt: Date
     }, ExtArgs["result"]["summaries"]>
     composites: {}
@@ -1518,6 +1530,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Summaries", 'Int'>
     readonly title: FieldRef<"Summaries", 'String'>
     readonly content: FieldRef<"Summaries", 'String'>
+    readonly original: FieldRef<"Summaries", 'String'>
     readonly createdAt: FieldRef<"Summaries", 'DateTime'>
   }
     
@@ -1903,6 +1916,7 @@ export namespace Prisma {
     id: 'id',
     title: 'title',
     content: 'content',
+    original: 'original',
     createdAt: 'createdAt'
   };
 
@@ -1996,6 +2010,7 @@ export namespace Prisma {
     id?: IntFilter<"Summaries"> | number
     title?: StringFilter<"Summaries"> | string
     content?: StringFilter<"Summaries"> | string
+    original?: StringFilter<"Summaries"> | string
     createdAt?: DateTimeFilter<"Summaries"> | Date | string
   }
 
@@ -2003,6 +2018,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    original?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2013,6 +2029,7 @@ export namespace Prisma {
     NOT?: SummariesWhereInput | SummariesWhereInput[]
     title?: StringFilter<"Summaries"> | string
     content?: StringFilter<"Summaries"> | string
+    original?: StringFilter<"Summaries"> | string
     createdAt?: DateTimeFilter<"Summaries"> | Date | string
   }, "id">
 
@@ -2020,6 +2037,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    original?: SortOrder
     createdAt?: SortOrder
     _count?: SummariesCountOrderByAggregateInput
     _avg?: SummariesAvgOrderByAggregateInput
@@ -2035,12 +2053,14 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Summaries"> | number
     title?: StringWithAggregatesFilter<"Summaries"> | string
     content?: StringWithAggregatesFilter<"Summaries"> | string
+    original?: StringWithAggregatesFilter<"Summaries"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Summaries"> | Date | string
   }
 
   export type SummariesCreateInput = {
     title: string
     content: string
+    original: string
     createdAt?: Date | string
   }
 
@@ -2048,12 +2068,14 @@ export namespace Prisma {
     id?: number
     title: string
     content: string
+    original: string
     createdAt?: Date | string
   }
 
   export type SummariesUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2061,6 +2083,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2068,12 +2091,14 @@ export namespace Prisma {
     id?: number
     title: string
     content: string
+    original: string
     createdAt?: Date | string
   }
 
   export type SummariesUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2081,6 +2106,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2125,6 +2151,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    original?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2136,6 +2163,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    original?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2143,6 +2171,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    original?: SortOrder
     createdAt?: SortOrder
   }
 

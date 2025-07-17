@@ -51,6 +51,19 @@ export async function scrapeContent(url: string): Promise<string> {
       .replace(/\n+/g, ' ') // Replace newlines with spaces
       .trim();
 
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+      await fetch(`${baseUrl}/api/scraped` , {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url, content }),
+      });
+    } catch (error) {
+      console.error("Error saving scraped content:", error);
+    }
+
     return content;
   } catch (error) {
     console.error('Error scraping content:', error);

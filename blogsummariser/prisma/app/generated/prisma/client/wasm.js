@@ -124,6 +124,7 @@ exports.Prisma.SummariesScalarFieldEnum = {
   id: 'id',
   title: 'title',
   content: 'content',
+  original: 'original',
   createdAt: 'createdAt'
 };
 

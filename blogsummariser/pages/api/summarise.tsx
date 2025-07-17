@@ -39,7 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const post = await prisma.summaries.create({
                 data: {
                 title,
-                content,
+                content: summarised.summary? summarised.summary : "No summary available",
+                original: content
                 },
             })
             console.log("Post created:", post);
