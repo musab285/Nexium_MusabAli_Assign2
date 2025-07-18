@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import {toast} from "sonner"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +15,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
   const [ogcontent, setogContent] = useState("")
   const [scrapedData, setScrapedData] = useState("")
+  const [toastOn, setToastOn] = useState(false)
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value)
@@ -137,6 +138,10 @@ export default function Page() {
 
   // Summary state
   if (summarise) {
+    if (!toastOn && !loading){
+      toast.success("Content saved to Database!")
+      setToastOn(true)
+    }
     return (
       <div className="min-h-screen flex flex-col">
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -199,9 +204,13 @@ export default function Page() {
   }
 
   // Translation state
-  if (translate) {
-    console.log(scrapedData)
+  if (translate && !loading) {
+    if (!toastOn){
+      toast.success("Content saved to Database!")
+      setToastOn(true)
+    }
     return (
+      
       <div className="min-h-screen flex flex-col">
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-14 items-center">
