@@ -21,7 +21,6 @@ export function NavHistory({
     original: string
   }[]
 }) {
-  const { isMobile } = useSidebar()
   const router = useRouter()
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

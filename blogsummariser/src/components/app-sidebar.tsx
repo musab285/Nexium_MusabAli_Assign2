@@ -29,9 +29,15 @@ async function fetchData() {
   }
 }
 
-      
+type HistoryItem = {
+  id: number ;
+  title: string;
+  content: string;
+  original: string;
+};
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [history, setHistory] = React.useState<any[]>();
+  const [history, setHistory] = React.useState<HistoryItem[]>();
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
     fetchData().then(fetchedData => setHistory(fetchedData.data));
