@@ -23,12 +23,12 @@ export function NavHistory({
   const router = useRouter()
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Previosly Summarised Content</SidebarGroupLabel>
+      <SidebarGroupLabel>Previously Summarised Content</SidebarGroupLabel>
       <SidebarMenu>
         {history.map((item) => (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton asChild>
-              <Button variant="ghost" className="justify-start w-full hover:bg-gray-200 hover:cursor-pointer font-normal" onClick={()=>{router.push(`/${item.id}`)}}> 
+              <Button variant="ghost" size="lg" className="justify-start mt-2 w-full hover:bg-gray-200 hover:cursor-pointer font-normal" onClick={()=>{router.push(`/${item.id}`)}}> 
                 <span>{item.title}</span>
               </Button>
             </SidebarMenuButton>

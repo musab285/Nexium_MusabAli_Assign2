@@ -10,6 +10,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 async function fetchData() {
@@ -51,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   if(!loading) {
   return (
-    <Sidebar className="border-r-2 shadow-md/20" variant="sidebar" {...props}>
+    <Sidebar className="shadow-lg/50 p-0 " variant="floating" {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-3 font-semibold text-shadow-sm/10 text-xl">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
@@ -67,6 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           Content Processor
         </div>
        </SidebarHeader>
+       <Separator className="mt-2"/>
       <SidebarContent>
         <NavHistory history={history || []} />
       </SidebarContent>
@@ -76,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
   else{
     return (
-      <Sidebar className="border-r-0" variant="sidebar" {...props}>
+      <Sidebar className="shadow-lg/50 p-0 " variant="floating" {...props}>
         <SidebarHeader>
           <div className="flex items-center gap-3 font-semibold text-shadow-sm/10 text-xl">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
@@ -91,7 +93,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
             Content Processor
           </div>
+
         </SidebarHeader>
+        <Separator className="mt-2 "/>
         <SidebarContent>
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">Loading history...</p>
