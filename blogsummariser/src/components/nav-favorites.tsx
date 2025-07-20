@@ -30,7 +30,7 @@ export function NavHistory({
         {history.map((item) => (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton asChild>
-              <Button variant="ghost" className="justify-start w-full hover:bg-gray-200 font-normal" onClick={()=>{router.push(`/${item.id}`)}}> 
+              <Button variant="ghost" className="justify-start w-full hover:bg-gray-200 hover:cursor-pointer font-normal" onClick={()=>{router.push(`/${item.id}`)}}> 
                 <span>{item.title}</span>
               </Button>
             </SidebarMenuButton>
